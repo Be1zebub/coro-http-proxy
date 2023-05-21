@@ -111,7 +111,6 @@ local function decoder(read, decode)
       if item or newIndex then
         -- There was enough data to emit an event!
         if newIndex then
-          p(item, newIndex)
           assert(type(newIndex) == "number", "index must be a number if set")
           -- There was leftover data
           index = newIndex

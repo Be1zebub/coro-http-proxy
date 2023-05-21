@@ -1,11 +1,14 @@
 local http = require("coro-http")
 
-local function connect(proxy)
+local function connect(proxy, url)
+	local uri = http.parseUrl(url)
+	local from = uri.host ..":".. uri.port
 	local connection = http.getConnection(proxy.host, proxy.port, proxy.tls)
+
 	local data = {
 	    method = "CONNECT",
-	    path = proxy.path or "/",
-	    {"Host", proxy.host},
+	    path = from,
+	    {"Host", from},
 		{"proxy-connection", proxy.keepalive ~= false and "keep-alive" or "close"}
 	}
 
@@ -20,23 +23,25 @@ local function connect(proxy)
 		return connection
 	else
 		connection.socket:close()
+		p(response)
+		return false, response.code
 	end
 end
 
 local function chain(connection, url)
-	local requestURI = http.parseUrl(url)
+	local uri = http.parseUrl(url)
 
-	connection.host = requestURI.host
-	connection.port = requestURI.port
-	connection.tls = requestURI.tls
+	connection.host = uri.host
+	connection.port = uri.port
+	connection.tls = uri.tls
 	connection.reset()
 
 	http.saveConnection(connection)
 end
 
 local function request(proxy, method, url, headers, body, customOptions)
-	local connection = connect(proxy)
-	if connection == nil then return end
+	local connection, reason = connect(proxy, url)
+	if connection == false then p("coro-http-proxy connect error ".. reason) return end
 
 	chain(connection, url)
 

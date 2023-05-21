@@ -152,6 +152,7 @@ local function request(method, url, headers, body, customOptions)
   end
 
   write(req)
+
   if body then write(body) end
   local res = read()
   if not res then
@@ -162,6 +163,7 @@ local function request(method, url, headers, body, customOptions)
     -- TODO: think about if this could resend requests with side effects and cause
     -- them to double execute in the remote server.
     if connection.reused then
+      print("reused")
       return request(method, url, headers, body)
     end
     error("Connection closed")
