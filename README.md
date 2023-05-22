@@ -1,5 +1,6 @@
 ### http proxy for Luvit coro-http
-Makes http CONNECT tunnelling
+Makes http CONNECT tunnelling  
+read test.lua for usage example
 
 ### Deps:
 [coro-http](https://github.com/luvit/lit/blob/master/deps/coro-http.lua)  
