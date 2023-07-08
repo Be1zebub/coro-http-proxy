@@ -13,7 +13,7 @@ end
 
 local function connect(proxy, url)
 	local uri = http.parseUrl(url)
-	local from = uri.host ..":".. uri.port
+	local from = uri.hostname ..":".. uri.port
 	local connection = http.getConnection(proxy.host, proxy.port, proxy.tls)
 
 	local data = {
